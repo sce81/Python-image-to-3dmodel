@@ -1,0 +1,29 @@
+# Python environments and caches
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+.cache/
+.tmp/
+
+# Generated pipeline artifacts and user-supplied source material
+Inputs/
+raw_meshes/
+Outputs/
+Logs/
+
+# Local tooling and editor state
+.agents/
+.codex/
+.vscode/
+.idea/
+
+# Secrets and local configuration
+.env
+.env.*
+*.secret
+*.token
+
+# OS files
+.DS_Store
+Thumbs.db

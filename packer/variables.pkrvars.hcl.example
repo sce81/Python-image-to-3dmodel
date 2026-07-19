@@ -1,0 +1,9 @@
+# Copy to trellis2-g7.auto.pkrvars.hcl, set your values, and keep the copy uncommitted.
+aws_region           = "eu-west-2"
+subnet_id            = "subnet-REPLACE_ME"
+iam_instance_profile = "PackerTrellis2BuildInstanceProfile"
+pipeline_git_ref     = "REPLACE_WITH_PUSHED_COMMIT_SHA"
+
+# Keep the default unless the pinned TRELLIS.2 release requires a different wheel source.
+torch_index_url = "https://download.pytorch.org/whl/cu130"
+torch_packages  = "torch==2.10.0 torchvision"

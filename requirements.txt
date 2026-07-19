@@ -19,7 +19,6 @@ cycler==0.12.1
 cyclopts==4.21.0
 dash==4.4.0
 decorator==5.3.1
-diff_gaussian_rasterization @ file:///C:/Users/simon/Documents/3D-Imaging-Pipeline/.tmp/mip-splatting/submodules/diff-gaussian-rasterization
 docstring_parser==0.18.0
 easydict==1.13
 executing==2.2.1
@@ -72,7 +71,6 @@ networkx==3.6.1
 ninja==1.13.0
 numba==0.66.0
 numpy==2.4.6
-nvdiffrast @ file:///C:/Users/simon/Documents/3D-Imaging-Pipeline/.tmp/nvdiffrast
 nvidia-cuda-nvrtc-cu12==12.4.127
 nvidia-cuda-runtime-cu12==12.4.127
 onnxruntime==1.27.0

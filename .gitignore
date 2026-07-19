@@ -6,24 +6,56 @@ __pycache__/
 .cache/
 .tmp/
 
-# Generated pipeline artifacts and user-supplied source material
-Inputs/
-raw_meshes/
-Outputs/
-Logs/
+# User-supplied source material and generated pipeline artifacts
+Inputs/*
+!Inputs/.gitkeep
+Source_Images/*
+!Source_Images/.gitkeep
+raw_meshes/*
+!raw_meshes/.gitkeep
+Outputs/*
+!Outputs/.gitkeep
+Logs/*
+!Logs/.gitkeep
 
-# Local tooling and editor state
-.agents/
+# Asset-specific working data, reports, checkpoints, and diagnostics
+WorkingFolder/*
+!WorkingFolder/*.py
+!WorkingFolder/asset_contracts/
+WorkingFolder/asset_contracts/*
+!WorkingFolder/asset_contracts/.gitkeep
+
+# ComfyUI worker weights, IO, state, and third-party clones
+tools/ComfyUI/*
+!tools/ComfyUI/.gitkeep
+
+# Local assistant state
 .codex/
+.claude/
+.agents/
 .vscode/
 .idea/
 
-# Secrets and local configuration
+# Secrets and machine-specific configuration
 .env
 .env.*
 *.secret
 *.token
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+credentials
+credentials.*
+aws-credentials*
+service-account*.json
+.mcp.local.json
+*.local.json
 
+# Packer local inputs and artifacts
+packer/*.auto.pkrvars.hcl
+packer/manifest.json
 # OS files
 .DS_Store
 Thumbs.db

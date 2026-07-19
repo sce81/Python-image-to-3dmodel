@@ -1,11 +1,11 @@
-﻿"""
-Nexus Protocol â€” Stage 2: Blender background post-processor
+"""
+Nexus Protocol — Stage 2: Blender background post-processor
 
 Takes raw TRELLIS GLBs (dense, organic, arbitrary scale) and makes them
 engine-ready for UE5.7: retopo to a sane polycount, snap to your cm grid,
 recentre origin, orient +Z up, re-export clean GLB.
 
-Run headless â€” no Blender UI needed:
+Run headless — no Blender UI needed:
     blender --background --python blender_postprocess.py
 
 Requires Blender 5.1.x (you're already on it).
@@ -45,6 +45,10 @@ LENGTH_AXIS = os.environ.get("NEXUS_LENGTH_AXIS", "x").lower()
 SMOOTH_NORMALS = os.environ.get("NEXUS_SMOOTH_NORMALS", "1") != "0"
 REFERENCE_MODEL = os.environ.get("NEXUS_REFERENCE_MODEL", "")
 MATCH_REFERENCE_DIMS = os.environ.get("NEXUS_MATCH_REFERENCE_DIMS", "0") == "1"
+REMOVE_PRESENTATION_BASE = os.environ.get("NEXUS_REMOVE_PRESENTATION_BASE", "0") == "1"
+REMOVE_MICRO_ISLANDS = os.environ.get("NEXUS_REMOVE_MICRO_ISLANDS", "1") != "0"
+MICRO_ISLAND_MAX_FACES = int(os.environ.get("NEXUS_MICRO_ISLAND_MAX_FACES", "32"))
+MICRO_ISLAND_MAX_EXTENT_RATIO = float(os.environ.get("NEXUS_MICRO_ISLAND_MAX_EXTENT_RATIO", "0.01"))
 UP_AXIS_FIX  = True          # rotate so +Z is up (TRELLIS/GLB often Y-up)
 SINGLE_MESH  = os.environ.get("NEXUS_MESH")  # if set, process only this mesh_id
 
@@ -107,6 +111,56 @@ def join_meshes(objs):
     bpy.ops.object.join()
     return bpy.context.view_layer.objects.active
 
+
+def remove_micro_islands(obj):
+    """Remove only extraction debris, never meaningful disconnected asset parts."""
+    if not REMOVE_MICRO_ISLANDS:
+        print("  micro-island cleanup disabled")
+        return
+
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    remaining = set(bm.verts)
+    components = []
+    while remaining:
+        seed = remaining.pop()
+        stack = [seed]
+        verts = {seed}
+        while stack:
+            vertex = stack.pop()
+            for edge in vertex.link_edges:
+                other = edge.other_vert(vertex)
+                if other not in verts:
+                    verts.add(other)
+                    remaining.discard(other)
+                    stack.append(other)
+        faces = {face for vertex in verts for face in vertex.link_faces}
+        minimum = [min(vertex.co[axis] for vertex in verts) for axis in range(3)]
+        maximum = [max(vertex.co[axis] for vertex in verts) for axis in range(3)]
+        extent = max(maximum[axis] - minimum[axis] for axis in range(3))
+        components.append((verts, faces, extent))
+
+    primary_extent = max((component[2] for component in components), default=0.0)
+    threshold = primary_extent * MICRO_ISLAND_MAX_EXTENT_RATIO
+    debris = [
+        component for component in components
+        if len(component[1]) <= MICRO_ISLAND_MAX_FACES and component[2] <= threshold
+    ]
+    if not debris:
+        bm.free()
+        print("  micro-island cleanup: none found")
+        return
+
+    for verts, _faces, _extent in debris:
+        bmesh.ops.delete(bm, geom=list(verts), context="VERTS")
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+    print(
+        f"  removed {len(debris)} micro-island(s) "
+        f"(<= {MICRO_ISLAND_MAX_FACES} faces and <= "
+        f"{MICRO_ISLAND_MAX_EXTENT_RATIO:.1%} primary extent)"
+    )
 
 def _apply_triangulate(obj):
     mod = obj.modifiers.new("triangulate_for_export", "TRIANGULATE")
@@ -241,7 +295,10 @@ def smooth_normals(obj):
 
 
 def remove_generated_base(obj):
-    if ASSET_TARGET not in {"body_shell", "meshai_car"}:
+    # Low faces are often the vehicle underbody. Never remove them merely by height.
+    # Presentation-base removal is opt-in and must be paired with visual validation.
+    if ASSET_TARGET not in {"body_shell", "meshai_car"} or not REMOVE_PRESENTATION_BASE:
+        print("  presentation base removal disabled; preserving lower-body geometry")
         return
 
     mesh = obj.data
@@ -272,6 +329,7 @@ def remove_generated_base(obj):
     bm.to_mesh(mesh)
     bm.free()
     mesh.update()
+
 
 
 def symmetrize_width(obj):
@@ -381,6 +439,7 @@ def process_one(path: Path):
     fix_orientation(obj)
     orient_long_axis(obj)
     symmetrize_width(obj)
+    remove_micro_islands(obj)
     remove_generated_base(obj)
     match_reference_dimensions(obj)
     retopo(obj, TARGET_TRIS)

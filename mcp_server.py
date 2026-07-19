@@ -1,5 +1,5 @@
-﻿"""
-Nexus Protocol â€” Asset Pipeline MCP Server
+"""
+Nexus Protocol — Asset Pipeline MCP Server
 Runs on the Windows PC (RTX 4080 Super). Actioned from the M4 Pro laptop.
 
 Exposes the TRELLIS -> Blender pipeline as MCP tools over the network so any MCP
@@ -16,7 +16,7 @@ Then from the laptop, point your MCP client at:
     http://<WINDOWS-LAN-IP>:8765/mcp
 
 SECURITY: this binds to your LAN. Keep it on a trusted private network. The token
-check below is a minimal gate, not real auth â€” do NOT expose this to the internet
+check below is a minimal gate, not real auth — do NOT expose this to the internet
 or port-forward it. For remote access use a VPN / Tailscale, not a public port.
 """
 
@@ -31,7 +31,7 @@ from pathlib import Path
 from mcp.server.fastmcp import FastMCP
 
 # --- Paths (Windows) ----------------------------------------------------
-ROOT        = Path(r"C:\Users\simon\Documents\3D-Imaging-Pipeline")
+ROOT        = Path(__file__).resolve().parent
 INPUT_DIR   = ROOT / "Inputs"
 RAW_DIR     = ROOT / "raw_meshes"
 UE_DIR      = ROOT / "Outputs"
@@ -84,7 +84,7 @@ def generate_prop(image_base64: str, name: str, quality: str = "high",
                   texture_size: int = 0,
                   token: str = "") -> str:
     """
-    Generate a raw 3D mesh from a reference image using TRELLIS 2 on the 4080 Super.
+    Generate a raw 3D mesh from a reference image using TRELLIS on the 4080 Super.
 
     image_base64: PNG/JPG reference image, base64-encoded (sent from the laptop).
     name:         slug for the output file (no extension).

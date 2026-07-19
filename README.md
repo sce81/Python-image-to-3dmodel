@@ -21,5 +21,6 @@ Use Python 3.11. Install the Windows runtime with `./setup_cuda13.ps1`, then run
 - [TRELLIS.2 texturing](Instructions/Pipeline/06-trellis2-texturing.md)
 - [Validation and release](Instructions/Pipeline/07-mesh-validation.md)
 - [AWS G7 AMI build](packer/README.md)
+- [Codex pipeline skill](.codex/skills/nexus-asset-pipeline/SKILL.md)
 
 Runtime inputs, generated outputs, logs, model weights, credentials, and machine-local configuration are ignored by Git.

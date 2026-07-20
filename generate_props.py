@@ -146,7 +146,6 @@ if torch.cuda.is_available():
     torch.backends.cudnn.allow_tf32 = True
     torch.backends.cudnn.benchmark = True
 
-
 class Tee:
     def __init__(self, *streams):
         self.streams = streams

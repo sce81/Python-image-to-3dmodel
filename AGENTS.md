@@ -20,6 +20,7 @@ Local Windows image-to-3D pipeline for Nexus Protocol. This file holds always-on
 6. [TRELLIS 2 texturing](Instructions/Pipeline/06-trellis2-texturing.md)
 7. [Mesh validation](Instructions/Pipeline/07-mesh-validation.md)
 8. [Blender and release](Instructions/Pipeline/08-blender-and-release.md)
+9. [Memory and MCP](Instructions/Pipeline/09-memory-and-mcp.md)
 
 ## I/O and safety
 

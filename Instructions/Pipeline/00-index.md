@@ -10,4 +10,5 @@ Use one stage document at a time. `AGENTS.md` contains hard constraints and link
 6. [TRELLIS 2 texturing](06-trellis2-texturing.md)
 7. [Mesh validation](07-mesh-validation.md)
 8. [Blender and release](08-blender-and-release.md)
-9. [Optional AWS G7 Spot offload](10-aws-g7-spot-offload.md)
+9. [Memory and MCP](09-memory-and-mcp.md)
+10. [Optional AWS G7 Spot offload](10-aws-g7-spot-offload.md)

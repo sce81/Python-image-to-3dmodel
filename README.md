@@ -24,3 +24,13 @@ Use Python 3.11. Install the Windows runtime with `./setup_cuda13.ps1`, then run
 - [Codex pipeline skill](.codex/skills/nexus-asset-pipeline/SKILL.md)
 
 Runtime inputs, generated outputs, logs, model weights, credentials, and machine-local configuration are ignored by Git.
+
+## Agentic stage controller
+
+`agentic_pipeline.py` keeps per-asset state and decision records under `WorkingFolder/agent_runs/`, while TRELLIS and Blender remain independent workers. Initialize an approved source with `init`, run a named stage, and use `approve` only after human review. Geometry and texture promotion remain separate gates.
+
+```powershell
+python .\agentic_pipeline.py init --asset-id <asset_id> --contract .\WorkingFolder\asset_contracts\<asset_id>.json --raster-approved
+python .\agentic_pipeline.py run --asset-id <asset_id> --stage geometry
+python .\agentic_pipeline.py approve --asset-id <asset_id> --stage geometry_review --reviewer <reviewer>
+```
